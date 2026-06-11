@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Birthday, Dias! 🎉</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0f172a, #1e1b4b);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            overflow: hidden;
+            color: #f3f4f6;
+        }
+
+        /* Background floating elements */
+        .particles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .particle {
+            position: absolute;
+            pointer-events: none;
+            animation: floatUp 6s linear infinite;
+            bottom: -50px;
+            opacity: 0;
+        }
+
+        @keyframes floatUp {
+            0% { transform: translateY(0) rotate(0deg); opacity: 0; }
+            10% { opacity: 0.6; }
+            90% { opacity: 0.6; }
+            100% { transform: translateY(-105vh) rotate(360deg); opacity: 0; }
+        }
+
+        /* Card Container */
+        .card {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            padding: 40px 30px;
+            border-radius: 24px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            text-align: center;
+            max-width: 550px;
+            width: 90%;
+            z-index: 10;
+            transition: all 0.5s ease;
+            max-height: 85vh;
+            overflow-y: auto;
+        }
+
+        /* Scrollbar styling for card */
+        .card::-webkit-scrollbar {
+            width: 6px;
+        }
+        .card::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 3px;
+        }
+
+        /* Text Line Styling */
+        .text-line {
+            font-size: 1.3rem;
+            line-height: 1.6;
+            color: #f9fafb;
+            margin-bottom: 10px;
+            animation: fadeIn 0.5s ease forwards;
+            white-space: pre-line;
+        }
+
+        .highlight {
+            color: #fbcfe8;
+            font-weight: bold;
+            text-shadow: 0 0 15px rgba(251, 207, 232, 0.6);
+            font-size: 1.35rem;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Control Buttons */
+        .controls {
+            margin-top: 25px;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .btn {
+            color: white;
+            border: none;
+            padding: 12px 28px;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+
+        .next-btn {
+            background: linear-gradient(45deg, #ec4899, #8b5cf6);
+            box-shadow: 0 10px 20px rgba(236, 72, 153, 0.3);
+        }
+
+        .next-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 25px rgba(236, 72, 153, 0.5);
+        }
+
+        .prev-btn {
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .prev-btn:hover {
+            background: rgba(255, 255, 255, 0.25);
+        }
+
+        .cake {
+            font-size: 4.5rem;
+            display: none;
+            margin-bottom: 15px;
+            animation: pop 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+            margin-bottom: 25px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #ec4899, #8b5cf6);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        @keyframes pop {
+            0% { transform: scale(0); }
+            100% { transform: scale(1); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="particles" id="particles"></div>
+
+    <div class="card">
+        <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+        <div class="cake" id="cakeIcon">🎂</div>
+        <div id="textContainer"></div>
+        <div class="controls">
+            <button class="btn prev-btn" id="prevBtn" onclick="prevStep()" style="display: none;">Назад</button>
+            <button class="btn next-btn" id="nextBtn" onclick="nextStep()">Начать ✨</button>
+        </div>
+    </div>
+
+    <script>
+        const steps = [
+            "Hey Dias",
+            "Today is your birthday so…",
+            "Happy birthday to you!!! 😝😝🫶🏻🫶🏻🫶🏻🫶🏻",
+            "It’s funny that we’ve known each other since 7th grade 🤯",
+            "Back then, we were just two classmates sitting at the same desk. Now we’ve already graduated from school.",
+            "Even though I don’t know every detail about your life, you’ve become one of the closest people to me.",
+            "For the last three years, we’ve talked almost every day 😦",
+            "Sometimes it was a real conversation.\n\nSometimes it was just sending Instagram reels to each other.\n\nAnd in 11th grade, you were the only person who consistently stayed in touch with me.",
+            "I don’t think I’ve ever properly thanked you for that.",
+            "What I admire about you?? 👽",
+            "You are one of those people who are easy to talk to 🌷🌷🌷🌷🌷",
+            "You understand jokes, you make people feel comfortable, and at the same time you know what you want 🤠",
+            "You know how to set priorities and keep moving toward your goals.\n\nI really respect that 🫰🏻",
+            "About wishes for your future 👾",
+            "Right now, you are going through one of the most important moments of your life preparing for your entrance exams. Don't forget, you can do this! I believe in you, and I know just how smart and brilliant you are 🤫😝😝😝😝🥰🥰🥰🥰🥰",
+            "My wish for you:",
+            "I hope you keep doing what you love.",
+            "I hope you stay positive, curious, and confident in yourself.",
+            "I hope you meet good people, achieve your goals, and create a life that makes you happy.",
+            "Cuz you deserve that ⭐️⭐️⭐️",
+            "And if one day…",
+            "If one day everything feels like it’s falling apart,",
+            "if things don’t go according to plan,",
+            "if you feel tired or lost,",
+            "I want you to remember something.",
+            "I believe in you.",
+            "Not because everything will always be perfect.",
+            "But because I know the kind of person you are.",
+            "No matter what 🙃",
+            "Even if someday we stop talking as often,",
+            "even if life takes us in different directions,",
+            "I will still hope that you’re doing well.",
+            "You know I’ve told you before about people I no longer talk to but still sincerely wish the best for.",
+            "You are definitely one of those people 😝😝😝",
+            "So remember",
+            "Never underestimate yourself.",
+            "Never think you’re not capable enough.",
+            "You can achieve much more than you think.",
+            "And if things ever become too difficult,",
+            "forget the pride, forget the principles, and just text me.",
+            "I’ll always be ready to support you.",
+            "Finally……..",
+            "Happy Birthday, Dias 🎂\n\nThank you for being a part of my school years.\n\nThank you for the conversations, the reels, the jokes, and the memories.\n\nI wish you happiness, success, good health, and many reasons to smile.\n\nAnd most importantly —\n\nI hope you never stop believing in yourself.\n\nHappy 17th Birthday! 🎉"
+        ];
+
+        let currentStep = -1;
+        const textContainer = document.getElementById('textContainer');
+        const nextBtn = document.getElementById('nextBtn');
+        const prevBtn = document.getElementById('prevBtn');
+        const cakeIcon = document.getElementById('cakeIcon');
+        const progressFill = document.getElementById('progressFill');
+
+        function updateDisplay() {
+            textContainer.innerHTML = '';
+            
+            if (currentStep >= 0 && currentStep < steps.length) {
+                const isFinal = currentStep === steps.length - 1;
+                const line = document.createElement('p');
+                line.classList.add('text-line');
+                line.innerHTML = steps[currentStep];
+                
+                if (isFinal) {
+                    line.classList.add('highlight');
+                    cakeIcon.style.display = 'inline-block';
+                    nextBtn.style.display = 'none';
+                    burstParticles(50);
+                } else {
+                    cakeIcon.style.display = 'none';
+                    nextBtn.style.display = 'inline-block';
+                    nextBtn.innerText = "Дальше ✨";
+                }
+                
+                textContainer.appendChild(line);
+                prevBtn.style.display = currentStep > 0 ? 'inline-block' : 'none';
+                
+                // Progress Fill
+                const progressPercent = ((currentStep + 1) / steps.length) * 100;
+                progressFill.style.width = progressPercent + '%';
+                
+                if (currentStep === 14) {
+                    burstParticles(20);
+                }
+            } else if (currentStep === -1) {
+                textContainer.innerHTML = '<p class="text-line" style="font-weight:bold;">Привет, Диас! Тебе пришло интерактивное поздравление. Нажми кнопку ниже... 🎈</p>';
+                prevBtn.style.display = 'none';
+                nextBtn.innerText = "Открыть ✉️";
+                progressFill.style.width = '0%';
+            }
+        }
+
+        function nextStep() {
+            if (currentStep < steps.length - 1) {
+                currentStep++;
+                updateDisplay();
+            }
+        }
+
+        function prevStep() {
+            if (currentStep > 0) {
+                currentStep--;
+                updateDisplay();
+            }
+        }
+
+        // Initialize
+        updateDisplay();
+
+        // Particles System
+        const particlesContainer = document.getElementById('particles');
+        const shapes = ['❤️', '✨', '🎈', '🎉', '🫰🏻', '⭐️', '🌸'];
+
+        function createParticle() {
+            const particle = document.createElement('span');
+            particle.classList.add('particle');
+            particle.innerText = shapes[Math.floor(Math.random() * shapes.length)];
+            particle.style.left = Math.random() * 100 + 'vw';
+            particle.style.fontSize = Math.random() * (25 - 12) + 12 + 'px';
+            
+            const duration = Math.random() * (6 - 4) + 4;
+            particle.style.animationDuration = duration + 's';
+            
+            particlesContainer.appendChild(particle);
+            setTimeout(() => particle.remove(), duration * 1000);
+        }
+
+        setInterval(createParticle, 450);
+
+        function burstParticles(amount) {
+            for(let i = 0; i < amount; i++) {
+                setTimeout(createParticle, i * 40);
+            }
+        }
+    </script>
+</body>
+</html>
